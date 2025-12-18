@@ -1,12 +1,8 @@
 # Firebase App Hosting configuration for Flutter Web
+# Using Docker for reliable builds
 runConfig:
-  outputDirectory: build/web
-
-env:
-  - variable: FLUTTER_VERSION
-    value: "3.24.0"
-
-# Explicitly specify the buildpack to use
-buildpacks:
-  - id: google.flutter
-    version: latest
+  # Container will run on port 8080
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 4
