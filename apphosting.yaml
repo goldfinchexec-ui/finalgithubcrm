@@ -1,0 +1,16 @@
+# Firebase App Hosting configuration for Flutter Web
+runConfig:
+  # Serve the Flutter web build output
+  outputDirectory: build/web
+  
+env:
+  # Use Flutter's latest stable version
+  - variable: FLUTTER_VERSION
+    value: "stable"
+
+# Build configuration
+build:
+  # Commands to build the Flutter web app
+  buildCommand: |
+    flutter pub get
+    flutter build web --release --web-renderer canvaskit
