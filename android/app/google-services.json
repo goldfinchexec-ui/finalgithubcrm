@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844469990124",
+    "project_id": "goldfinche-ed986",
+    "storage_bucket": "goldfinche-ed986.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844469990124:android:4dd9abc3d006b1c06e6bc9",
+        "android_client_info": {
+          "package_name": "com.mycompany.CounterApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUAvcy9A5tiSFMWNb9uNpomMagDTUz8EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

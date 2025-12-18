@@ -1,0 +1,10 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // All authenticated users (staff) can read and write all files.
+    // Keep this until you introduce roles/tenants.
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
