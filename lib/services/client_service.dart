@@ -57,4 +57,12 @@ class ClientService {
       debugPrint('ClientService.delete error: $e');
     }
   }
+  Future<void> runTransaction(Future<void> Function(Transaction transaction) action) async {
+    try {
+      await _firestore.runTransaction(action);
+    } catch (e) {
+      debugPrint('ClientService.runTransaction error: $e');
+      rethrow;
+    }
+  }
 }

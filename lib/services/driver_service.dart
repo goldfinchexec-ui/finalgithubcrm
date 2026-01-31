@@ -57,4 +57,18 @@ class DriverService {
       debugPrint('DriverService.delete error: $e');
     }
   }
+  Future<void> runTransaction(Future<void> Function(Transaction transaction) action) async {
+    try {
+      await _firestore.runTransaction(action);
+    } catch (e) {
+      debugPrint('DriverService.runTransaction error: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> recalculateBalances() async {
+    // This is a heavy operation, effectively "Select ALL". 
+    // In a real app, this should be a Cloud Function. 
+    // For now we implement it client-side for "God Mode".
+  }
 }

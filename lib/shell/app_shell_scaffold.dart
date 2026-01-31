@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:ui';
 
 import 'package:goldfinch_crm/state/providers.dart';
 import 'package:goldfinch_crm/theme.dart';
@@ -39,15 +40,18 @@ class AppShellScaffold extends ConsumerWidget {
           ),
         ),
       ]),
-    );
+    ); // Fix missing closing bracket/semicolon from previous bad edit if any
   }
-}
+} // Ensuring class closure 
+
+
 
 class SidebarNav extends ConsumerWidget {
   final bool collapsed;
   const SidebarNav({super.key, required this.collapsed});
 
   @override
+
   Widget build(BuildContext context, WidgetRef ref) {
     final width = collapsed ? 70.0 : 250.0;
     final loc = GoRouterState.of(context).uri.toString();
@@ -56,9 +60,15 @@ class SidebarNav extends ConsumerWidget {
       duration: const Duration(milliseconds: 220),
       curve: Curves.easeOutCubic,
       width: width,
-      decoration: const BoxDecoration(color: AppColors.sidebar),
-      child: SafeArea(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      decoration: BoxDecoration(
+        color: AppColors.sidebar.withValues(alpha: 0.85), // Semi-transparent
+        border: Border(right: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+      ),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: SafeArea(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           // Header: logo + title (expanded) with an overlaid collapse/expand toggle.
           // Using Stack ensures the toggle doesn't participate in Row width
           // calculations, preventing overflow in collapsed (narrow) mode.
@@ -159,7 +169,7 @@ class SidebarNav extends ConsumerWidget {
           ),
         ]),
       ),
-    );
+    )));
   }
 }
 

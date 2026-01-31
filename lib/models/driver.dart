@@ -9,13 +9,14 @@ class Driver {
   final String email;
   final String vehicleReg;
   final String ownerId;
+  final int balancePence;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const Driver({required this.id, required this.name, required this.code, required this.email, required this.vehicleReg, required this.ownerId, required this.createdAt, required this.updatedAt});
+  const Driver({required this.id, required this.name, required this.code, required this.email, required this.vehicleReg, required this.ownerId, required this.createdAt, required this.updatedAt, this.balancePence = 0});
 
-  Driver copyWith({String? id, String? name, String? code, String? email, String? vehicleReg, String? ownerId, DateTime? createdAt, DateTime? updatedAt}) =>
-      Driver(id: id ?? this.id, name: name ?? this.name, code: code ?? this.code, email: email ?? this.email, vehicleReg: vehicleReg ?? this.vehicleReg, ownerId: ownerId ?? this.ownerId, createdAt: createdAt ?? this.createdAt, updatedAt: updatedAt ?? this.updatedAt);
+  Driver copyWith({String? id, String? name, String? code, String? email, String? vehicleReg, String? ownerId, DateTime? createdAt, DateTime? updatedAt, int? balancePence}) =>
+      Driver(id: id ?? this.id, name: name ?? this.name, code: code ?? this.code, email: email ?? this.email, vehicleReg: vehicleReg ?? this.vehicleReg, ownerId: ownerId ?? this.ownerId, createdAt: createdAt ?? this.createdAt, updatedAt: updatedAt ?? this.updatedAt, balancePence: balancePence ?? this.balancePence);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -24,6 +25,7 @@ class Driver {
         'email': email,
         'vehicle_reg': vehicleReg,
         'owner_id': ownerId,
+        'balance_pence': balancePence,
         'created_at': Timestamp.fromDate(createdAt),
         'updated_at': Timestamp.fromDate(updatedAt),
       };
@@ -39,6 +41,7 @@ class Driver {
         email: map['email']?.toString() ?? '',
         vehicleReg: map['vehicle_reg']?.toString() ?? '',
         ownerId: map['owner_id']?.toString() ?? '',
+        balancePence: (map['balance_pence'] is int) ? map['balance_pence'] as int : 0,
         createdAt: (map['created_at'] is Timestamp) ? (map['created_at'] as Timestamp).toDate() : DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0),
         updatedAt: (map['updated_at'] is Timestamp) ? (map['updated_at'] as Timestamp).toDate() : DateTime.tryParse(map['updated_at']?.toString() ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0),
       );

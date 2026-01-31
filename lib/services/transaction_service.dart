@@ -52,8 +52,51 @@ class TransactionService {
         createdAt: tx.createdAt == DateTime.fromMillisecondsSinceEpoch(0) ? now : tx.createdAt,
       );
 
-      final docRef = _firestore.collection('transactions').doc(next.id);
-      await docRef.set(next.toJson(), SetOptions(merge: true));
+      // Perform everything in a transaction
+      await _firestore.runTransaction((transaction) async {
+        final docRef = _firestore.collection('transactions').doc(next.id);
+        
+        // Get the old transaction if it exists to diff amount
+        final oldDoc = await transaction.get(docRef);
+        final oldAmount = (oldDoc.exists) ? (oldDoc.data()!['amount_pence'] as int? ?? 0) : 0;
+        final oldStatus = (oldDoc.exists) ? (oldDoc.data()!['status'] as String? ?? 'pending') : 'pending';
+        // Check if old status was paid
+        final wasPaid = oldStatus == TransactionStatus.paid.name || oldStatus == TransactionStatus.received.name;
+        
+        transaction.set(docRef, next.toJson(), SetOptions(merge: true));
+
+        // Update Driver/Client balance ONLY if status IS or WAS 'paid'/'received'
+        // Logic: 
+        // If NEW is paid: + (newAmount)
+        // If OLD was paid: - (oldAmount)
+        // Net change: (newPaid ? newAmount : 0) - (oldPaid ? oldAmount : 0)
+
+        final isPaid = next.status == TransactionStatus.paid || next.status == TransactionStatus.received;
+        
+        int delta = 0;
+        if (isPaid) delta += next.amountPence;
+        if (wasPaid) delta -= oldAmount;
+
+        if (delta != 0) {
+          if (next.relatedDriverId != null && next.relatedDriverId!.isNotEmpty) {
+            final driverRef = _firestore.collection('drivers').doc(next.relatedDriverId);
+            final driverSnap = await transaction.get(driverRef);
+            if (driverSnap.exists) {
+              final newBalance = (driverSnap.data()!['balance_pence'] as int? ?? 0) + delta;
+              transaction.update(driverRef, {'balance_pence': newBalance});
+            }
+          }
+          if (next.relatedClientId != null && next.relatedClientId!.isNotEmpty) {
+            final clientRef = _firestore.collection('clients').doc(next.relatedClientId);
+            final clientSnap = await transaction.get(clientRef);
+            if (clientSnap.exists) {
+              final newBalance = (clientSnap.data()!['balance_pence'] as int? ?? 0) + delta;
+              transaction.update(clientRef, {'balance_pence': newBalance});
+            }
+          }
+        }
+      });
+
       return next;
     } catch (e) {
       debugPrint('TransactionService.upsert error: $e');

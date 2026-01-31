@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goldfinch_crm/ui/components/skeleton_dashboard.dart';
 
 import 'package:goldfinch_crm/ui/components/page_header.dart';
 import 'package:goldfinch_crm/ui/components/stat_card.dart';
-// import 'package:goldfinch_crm/ui/components/ledger_table.dart';
 import 'package:goldfinch_crm/state/providers.dart';
 import 'package:goldfinch_crm/models/ledger_transaction.dart';
 import 'package:goldfinch_crm/utils/formatters.dart';
@@ -74,10 +74,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       const SizedBox(height: 4),
 
       txAsync.when(
-        loading: () => const Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-        ),
+        loading: () => const SkeletonDashboard(),
         error: (e, _) => Text('Error: $e'),
         data: (txs) {
           final periodStart = DateTime(_selectedYear, _selectedMonth, 1);
